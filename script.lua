@@ -2,7 +2,7 @@
 local Token = "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" 
 
 -- 
-local RawUrl = "https://raw.githubusercontent.com/nbhouse134-bit/lua3/refs/heads/main/script.lua?token=GHSAT0AAAAAAEEBNPTYWT7EW6QHNEBZUKZ62TJKYLA"
+local RawUrl = "https://raw.githubusercontent.com/nbhouse134-bit/lua3/refs/heads/main/script.lua?token=GHSAT0AAAAAAEEBNPTYLLFB5KNB2WBFUV5S2TJLMZA"
 
 local Success, Code = pcall(function()
     return game:HttpGet(RawUrl, true, {
