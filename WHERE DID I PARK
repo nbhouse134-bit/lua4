@@ -1,0 +1,94 @@
+-- where did i park?🚗
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+local Window = Rayfield:CreateWindow({
+   Name = "Where Did I Park? | Auto Farm",
+   LoadingTitle = "Loading Script...",
+   LoadingSubtitle = "by KAIYANGONTOP X GEMINI",
+   ConfigurationSaving = {
+      Enabled = false,
+   },
+   KeySystem = false
+})
+
+local MainTab = Window:CreateTab("Main", 4483362458)
+
+-- 
+local autoSearch = false
+local searchDelay = 0.05
+local currentWalkSpeed = 16
+
+-- 
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+local function setWalkSpeed(speed)
+    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid") then
+        LocalPlayer.Character:FindFirstChildOfClass("Humanoid").WalkSpeed = speed
+    end
+end
+
+-- ลูปเช็คกรณีตัวละครเกิดใหม่ ให้ความเร็วไม่รีเซ็ต
+LocalPlayer.CharacterAdded:Connect(function(char)
+    local humanoid = char:WaitForChild("Humanoid", 5)
+    if humanoid then
+        humanoid.WalkSpeed = currentWalkSpeed
+    end
+end)
+
+-- ฟังก์ชันรัน Remote Event
+local function doSearch()
+    local args = {
+        "Search"
+    }
+    local replicatedStorage = game:GetService("ReplicatedStorage")
+    local parkingGame = replicatedStorage:FindFirstChild("ParkingGame")
+    if parkingGame and parkingGame:FindFirstChild("Action") then
+        parkingGame.Action:FireServer(unpack(args))
+    end
+end
+
+-- Toggle
+local Toggle = MainTab:CreateToggle({
+   Name = "Auto Search (ค้นหารถอัตโนมัติ)",
+   CurrentValue = false,
+   Flag = "AutoSearchToggle",
+   Callback = function(Value)
+      autoSearch = Value
+      if autoSearch then
+         task.spawn(function()
+            while autoSearch do
+               doSearch()
+               task.wait(searchDelay)
+            end
+         end)
+      end
+   end,
+})
+
+-- Slider 
+local SearchSlider = MainTab:CreateSlider({
+   Name = "Search Speed / Delay (วินาที)",
+   Range = {0.01, 1.00},
+   Increment = 0.01,
+   Suffix = "s",
+   CurrentValue = 0.05,
+   Flag = "SearchDelaySlider",
+   Callback = function(Value)
+      searchDelay = Value
+   end,
+})
+
+-- Slider
+local SpeedSlider = MainTab:CreateSlider({
+   Name = "WalkSpeed (ความเร็วการเดิน)",
+   Range = {16, 200},
+   Increment = 1,
+   Suffix = " Speed",
+   CurrentValue = 16,
+   Flag = "WalkSpeedSlider",
+   Callback = function(Value)
+      currentWalkSpeed = Value
+      setWalkSpeed(Value)
+   end,
+})
